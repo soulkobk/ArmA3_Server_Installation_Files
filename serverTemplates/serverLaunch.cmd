@@ -279,6 +279,8 @@ if not "!optionalmodlist!" == "" (
 	)
 )
 
+path=%exepath%;%path%
+
 for /F "tokens=2 delims==;" %%a in ('findstr /c:"hostName =" "%configcfg%"') do (
 	set serverdescription=%%a
 	set serverdescription=!serverdescription:^"^=!
@@ -288,13 +290,7 @@ for /F "tokens=2 delims==;" %%a in ('findstr /c:"hostName =" "%configcfg%"') do 
 	echo  + MISSION -!serverdescription!
 	echo  + IP - %serverip%
 	echo  + PORT - %serverport%
-	echo --------------------------------------------------
 )
 
-setlocal disabledelayedexpansion
-
-setlocal
-path=%exepath%;%path%
 set commandline= -port=%serverport% "-config=%configcfg%" "-cfg=%basiccfg%" "-profiles=%serverprofile%" -name=%servername% "-servermod=%servermodlistfullpath%" "-mod=%clientmodlistfullpath%" %serveroptions%
 start "%servername%" /D "%exepath%" /%exepriority% /WAIT "%exename%" %commandline%
-endlocal

@@ -153,6 +153,7 @@ for /f "tokens=* usebackq" %%a in (`tasklist /fi "status eq running" ^| find /c 
 for /f "tokens=3 delims== " %%a in ('
 	nslookup -debug myip.opendns.com. resolver1.opendns.com 2^>nul ^| findstr /c:"internet address"
 ') do set "serverip=%%a"
+REM https://ipecho.net/plain
 
 setlocal enabledelayedexpansion
 
@@ -292,6 +293,11 @@ path=%exepath%;%path%
 for /F "tokens=2 delims==;" %%a in ('findstr /c:"hostName =" "%configcfg%"') do (
 	set serverdescription=%%a
 	set serverdescription=!serverdescription:^"^=!
+	set hour=%time:~0,2%
+	if "!hour:~0,1!" == " " set hour=0!hour:~1,1!
+	set min=%time:~3,2%
+	if "!min:~0,1!" == " " set min=0!min:~1,1!
+	set timecode=!hour!!min!
 	echo --------------------------------------------------
 	echo  + %servername% - SERVER STARTED W/MONITORING
 	echo --------------------------------------------------
@@ -299,10 +305,10 @@ for /F "tokens=2 delims==;" %%a in ('findstr /c:"hostName =" "%configcfg%"') do 
 	echo  + IP - %serverip%
 	echo  + PORT - %serverport%
 	echo --------------------------------------------------
-	echo  + LOCAL TIME - %time:~0,2%%time:~3,2% 
+	echo  + LOCAL TIME - !timecode!
 	echo  + RESTART TIMES - %serverrestarttimes%
 	echo --------------------------------------------------
-	echo  + %servername% - SERVER MONITOR STARTED
+	echo  + %servername% - SERVER MONITOR INITIATED
 	echo --------------------------------------------------
 )
 
@@ -315,17 +321,21 @@ timeout /t 60 >nul
 timeout /t %servermonitorduration% >nul
 for /f "tokens=* usebackq" %%a in (`tasklist /fi "status eq running" ^| find /c /i "%exename%"`) do (
 	if %%a == 0 (
-		echo  + %servername% - RESTARTING SERVER IN 60 SECONDS - CRASHED
+		echo  + %servername% - CHECKING SERVER IN 60 SECONDS - POSSIBLE SERVER CRASH
 		timeout /t 60 >nul
 		goto :serverrestart
 	)
 	if %%a == 1 (
 		for /f "tokens=* usebackq" %%a in (`tasklist /fi "status eq not responding" ^| find /c /i "%exename%"`) do (
 			if %%a == 0 (
-				set timecode=%time:~0,2%%time:~3,2%
+				set hour=%time:~0,2%
+				if "!hour:~0,1!" == " " set hour=0!hour:~1,1!
+				set min=%time:~3,2%
+				if "!min:~0,1!" == " " set min=0!min:~1,1!
+				set timecode=!hour!!min!
 				for %%a in (%serverrestarttimes%) do (
 					if !timecode! == %%a (
-						echo  + %servername% - RESTARTING SERVER IN 60 SECONDS - SCHEDULED %%a
+						echo  + %servername% - CHECKING SERVER IN 60 SECONDS - SCHEDULED %%a RESTART
 						taskkill /im %exename% /f >nul
 						timeout /t 60 >nul
 						goto :serverrestart
@@ -333,7 +343,7 @@ for /f "tokens=* usebackq" %%a in (`tasklist /fi "status eq running" ^| find /c 
 				)
 			)
 			if %%a == 1 (
-				echo  + %servername% - RESTARTING SERVER IN 60 SECONDS - NOT RESPONDING
+				echo  + %servername% - CHECKING SERVER IN 60 SECONDS - SERVER NOT RESPONDING
 				timeout /t 60 >nul
 				goto :serverrestart
 			)
@@ -343,9 +353,16 @@ for /f "tokens=* usebackq" %%a in (`tasklist /fi "status eq running" ^| find /c 
 goto :servermonitor
 
 :serverrestart
-set commandline= -port=%serverport% "-config=%configcfg%" "-cfg=%basiccfg%" "-profiles=%serverprofile%" -name=%servername% "-servermod=%servermodlistfullpath%" "-mod=%clientmodlistfullpath%" %serveroptions%
-start "%servername%" /D "%exepath%" /%exepriority% "%exename%" %commandline%
-echo  + %servername% - SERVER RESTARTED
+for /f "tokens=* usebackq" %%a in (`tasklist /fi "status eq running" ^| find /c /i "%exename%"`) do (
+	if %%a == 0 (
+		set commandline= -port=%serverport% "-config=%configcfg%" "-cfg=%basiccfg%" "-profiles=%serverprofile%" -name=%servername% "-servermod=%servermodlistfullpath%" "-mod=%clientmodlistfullpath%" %serveroptions%
+		start "%servername%" /D "%exepath%" /%exepriority% "%exename%" !commandline!
+		echo  + %servername% - SERVER NOT RUNNING, RESTART INITIATED
+	)
+	if %%a == 1 (
+		echo  + %servername% - SERVER ALREADY RUNNING, SERVER MONITOR INITIATED
+	)
+)
 goto :servermonitor
 
 :serverexit
