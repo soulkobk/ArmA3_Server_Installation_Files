@@ -144,7 +144,7 @@ REM @LEAVE THIS REM AT THE END OF THE LIST
 :: DON'T EDIT BELOW HERE! YOU'LL FCK SHIT UP - SOULKOBK ::
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-for /f "tokens=* usebackq" %%a in (`tasklist /fi "status eq running" ^| find /c /i "%exename%"`) do (
+for /f "tokens=* usebackq" %%a in (`tasklist /fo csv /fi "status eq running" ^| find /c /i "%exename%"`) do (
 	if %%a == 1 (
 		goto :serverexit
 	)
@@ -153,7 +153,6 @@ for /f "tokens=* usebackq" %%a in (`tasklist /fi "status eq running" ^| find /c 
 for /f "tokens=3 delims== " %%a in ('
 	nslookup -debug myip.opendns.com. resolver1.opendns.com 2^>nul ^| findstr /c:"internet address"
 ') do set "serverip=%%a"
-REM https://ipecho.net/plain
 
 setlocal enabledelayedexpansion
 
@@ -319,14 +318,14 @@ timeout /t 60 >nul
 
 :servermonitor
 timeout /t %servermonitorduration% >nul
-for /f "tokens=* usebackq" %%a in (`tasklist /fi "status eq running" ^| find /c /i "%exename%"`) do (
+for /f "tokens=* usebackq" %%a in (`tasklist /fo csv /fi "status eq running" ^| find /c /i "%exename%"`) do (
 	if %%a == 0 (
 		echo  + %servername% - CHECKING SERVER IN 60 SECONDS - POSSIBLE SERVER CRASH
 		timeout /t 60 >nul
 		goto :serverrestart
 	)
 	if %%a == 1 (
-		for /f "tokens=* usebackq" %%a in (`tasklist /fi "status eq not responding" ^| find /c /i "%exename%"`) do (
+		for /f "tokens=* usebackq" %%a in (`tasklist /fo csv /fi "status eq not responding" ^| find /c /i "%exename%"`) do (
 			if %%a == 0 (
 				set hour=%time:~0,2%
 				if "!hour:~0,1!" == " " set hour=0!hour:~1,1!
@@ -353,7 +352,7 @@ for /f "tokens=* usebackq" %%a in (`tasklist /fi "status eq running" ^| find /c 
 goto :servermonitor
 
 :serverrestart
-for /f "tokens=* usebackq" %%a in (`tasklist /fi "status eq running" ^| find /c /i "%exename%"`) do (
+for /f "tokens=* usebackq" %%a in (`tasklist /fo csv /fi "status eq running" ^| find /c /i "%exename%"`) do (
 	if %%a == 0 (
 		set commandline= -port=%serverport% "-config=%configcfg%" "-cfg=%basiccfg%" "-profiles=%serverprofile%" -name=%servername% "-servermod=%servermodlistfullpath%" "-mod=%clientmodlistfullpath%" %serveroptions%
 		start "%servername%" /D "%exepath%" /%exepriority% "%exename%" !commandline!
