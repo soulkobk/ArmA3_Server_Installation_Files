@@ -44,15 +44,15 @@
 
 **EXECUTE/RUN DEPLOYED SERVER**
 
-[6.0] To run the new server, enter the installation directory "C:\Arma 3 - Servers\\<server name>".
+[6.0] To run the new server, enter the installation directory "C:\Arma 3 - Servers\YOURSERVERNAME".
 
-[6.1] Configure your "C:\Arma 3 - Servers\\<server name>\server.cfg" file.
+[6.1] Configure your "C:\Arma 3 - Servers\YOURSERVERNAME\server.cfg" file.
 
-[6.2] Place your mission file within the "C:\Arma 3 - Servers\\<server name>\mpmissions" directory.
+[6.2] Place your mission file within the "C:\Arma 3 - Servers\YOURSERVERNAME\mpmissions" directory.
 
-[6.3] Edit the configuration of the server launch files within directory "C:\Arma 3 - Servers\\<server name>\cmd" (serverLaunch.cmd and/or serverLaunchMonitor.cmd).
+[6.3] Edit the configuration of the server launch files within directory "C:\Arma 3 - Servers\YOURSERVERNAME\cmd" (serverLaunch.cmd and/or serverLaunchMonitor.cmd).
 
-[6.4] Run the server launch cmd file from within the "C:\Arma 3 - Servers\\<server name>\cmd" folder (serverLaunch.cmd or serverLaunchMonitor.cmd).
+[6.4] Run the server launch cmd file from within the "C:\Arma 3 - Servers\YOURSERVERNAME\cmd" folder (serverLaunch.cmd or serverLaunchMonitor.cmd).
 
 **CHECK THAT SERVER HAS LAUNCHED CORRECTLY**
 
@@ -62,7 +62,7 @@
 
 **RELAUNCH ALREADY DEPLOYED SERVER**
 
-[8.0] To execute/run the already deployed server, go in to directory "C:\Arma 3 - Servers\<server name>\cmd" and execute/run one of the .cmd files (serverLaunch.cmd or serverLaunchMonitor.cmd).
+[8.0] To execute/run the already deployed server, go in to directory "C:\Arma 3 - Servers\YOURSERVERNAME\cmd" and execute/run one of the .cmd files (serverLaunch.cmd or serverLaunchMonitor.cmd).
 
 Note: The following dos not have to be strictly "C:\"... but do follow the same diectory structure wherever you choose to place the installation files. (eg, "X:\serverFiles\Arma3InstallationFiles", X:\serverFiles\Arma3MainServer", "X:\serverFiles\Arma3ServerMods", "X:\serverFiles\Arma3DeployedServers")... then update the 3 cmd files for the correct paths, see [2.1].
 
