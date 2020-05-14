@@ -119,6 +119,18 @@ if !errorlevel! == 1 (
 	mkdir "%targetpath:"=%\keys" >nul 2>&1
 )
 
+pushd "%targetpath:"=%\logs" >nul 2>&1
+if !errorlevel! == 0 (
+	echo + REMOVED LOGS FOLDER LINK...
+	rmdir "%targetpath:"=%\logs" >nul 2>&1
+	echo + CREATED LOGS FOLDER LOCAL...
+	mkdir "%targetpath:"=%\logs" >nul 2>&1
+)
+if !errorlevel! == 1 (
+	echo + CREATED LOGS FOLDER LOCAL...
+	mkdir "%targetpath:"=%\logs" >nul 2>&1
+)
+
 echo --------------------------------------------------
 
 ::exe files
@@ -163,9 +175,6 @@ if !errorlevel! == 0 (
 )
 
 echo + COPYING SERVER EXECUTABLE FILES...
-REM for /f %%a in ('dir "%mainserverpath%\arma3server*.exe" /a:-d /b') do (
-	REM copy /B /V /Y "%mainserverpath:"=%\%%~a" "%targetpath:"=%\%%~a" >nul 2>&1
-REM )
 copy /B /V /Y "%mainserverpath:"=%\arma3server.exe" "%targetpath:"=%\%userinputpath%.exe" >nul 2>&1
 copy /B /V /Y "%mainserverpath:"=%\arma3server_x64.exe" "%targetpath:"=%\%userinputpath%_x64.exe" >nul 2>&1
 
@@ -198,9 +207,6 @@ exit /b
 :updateinstall
 echo --------------------------------------------------
 echo + UPDATING ARMA3SERVER EXE FILES...
-REM for /f %%a in ('dir "%mainserverpath%\arma3server*.exe" /a:-d /b') do (
-	REM copy /B /V /Y "%mainserverpath:"=%\%%~a" "%targetpath:"=%\%%~a" >nul 2>&1
-REM )
 copy /B /V /Y "%mainserverpath:"=%\arma3server.exe" "%targetpath:"=%\%userinputpath%.exe" >nul 2>&1
 copy /B /V /Y "%mainserverpath:"=%\arma3server_x64.exe" "%targetpath:"=%\%userinputpath%_x64.exe" >nul 2>&1
 
